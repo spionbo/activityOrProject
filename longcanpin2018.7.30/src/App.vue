@@ -15,29 +15,11 @@
         <div class="tit img1 img-size" data-height="39">&nbsp;</div>
         <article class="date">
             <div class="tit" v-if="data">
-                <div class="tab" v-for="item in data" :key="item.day">{{item[0].day.substr(4,2)}}月<br/>{{item[0].day.substr(6,2)}}日</div>
+                <div class="tab" v-for="item in data" :class="{current:item[0].day == today}" :key="item.day">{{item[0].day.substr(4,2)}}月<br/>{{item[0].day.substr(6,2)}}日</div>
             </div>
             <div class="cnt">
-                <ul>
-                    <li>
-                        <h2>建仓满<em>8</em>元</h2>
-                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
-                        <div class="btn img-size" data-fontSize="28"
-                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
-                    </li>
-                    <li>
-                        <h2>建仓满<em>8</em>元</h2>
-                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
-                        <div class="btn img-size" data-fontSize="28"
-                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
-                    </li>
-                    <li>
-                        <h2>建仓满<em>8</em>元</h2>
-                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
-                        <div class="btn img-size" data-fontSize="28"
-                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
-                    </li>
-                </ul>
+                <div class="option" v-for="item in dataObj" :key="item.key" v-html="item">
+                </div>
                 <p>*仅限农产品交易，产品包括GL大豆、GL小麦、GL玉米。</p>
             </div>
         </article>
@@ -84,6 +66,7 @@
         data(){
             return{
                 data : null,
+                dataObj : null,
                 data1 : null,
                 today : T.getDate.today().replace(/\-/g,"")
             }
@@ -102,7 +85,9 @@
                     let num = [1,2,3,4,5,6,7,8] ,
                         type = [24,25,26],//额 外加赠终极大奖
                         typeArr = {},
-                        arr = {};
+                        arr = {},
+                        arrObj = {} ,
+                        today = self.today;
                     data.response.data.list.forEach(obj=>{
                         num.forEach(num=>{
                             if(obj.day_no == num &&
@@ -110,9 +95,30 @@
                                 obj.money_type!="25" &&
                                 obj.money_type!="26"){
                                 if(!arr[num]){
-                                    arr[num] = []
+                                    arr[num] = [];
+                                    arrObj[num] = {};
                                 }
-                                arr[num].push(obj)
+                                arr[num].push(obj);
+                                arrObj[num] = `<ul class="${obj.day==today?'show':'hide'}">
+                                    <li class="${obj.money_type=='21' && obj.day==today?'cur':obj.money_type=='21'?'open':'gray'}">
+                                        <h2>建仓满<em>8</em>元</h2>
+                                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
+                                        <div class="btn img-size" data-fontSize="28"
+                                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
+                                    </li>
+                                    <li class="${obj.money_type=='22' && obj.day==today?'cur':obj.money_type=='22'?'open':'gray'}">
+                                        <h2>建仓满<em>200</em>元</h2>
+                                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
+                                        <div class="btn img-size" data-fontSize="28"
+                                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
+                                    </li>
+                                    <li class="${obj.money_type=='23' && obj.day==today?'cur':obj.money_type=='23'?'open':'gray'}">
+                                        <h2>建仓满<em>10000</em>元</h2>
+                                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
+                                        <div class="btn img-size" data-fontSize="28"
+                                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
+                                    </li>
+                                </ul>`;
                             }
                             type.forEach(typeNum=>{
                                 if(obj.money_type===String(typeNum)){
@@ -125,8 +131,12 @@
                         })
                     });
                     self.data = arr;
+                    self.dataObj  = arrObj;
                     console.log(arr)
                     console.log(typeArr)
+                    self.$nextTick(()=>{
+                        self.setImgSize();
+                    })
                 })
             },
             callApp(){
@@ -249,6 +259,9 @@
                 display:flex;
                 justify-content:center;
                 align-items: center;
+                &.hide{
+                    display:none;
+                }
                 li{
                     flex:1;
                     display:flex;
