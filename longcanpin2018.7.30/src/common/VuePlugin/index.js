@@ -29,9 +29,6 @@ MyPlugin.install = function (Vue, options) {
 			obj.data = obj.data || {};
 			Object.assign(obj.data,{
                 token : T.token,
-                channel : T.channel,
-                version : T.version,
-                uid : T.uid
             });
 			//设置
 			if (obj.load) self.$pops.loadding();

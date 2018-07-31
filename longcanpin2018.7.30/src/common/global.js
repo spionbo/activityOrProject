@@ -53,11 +53,16 @@ let T = {
 		T.update();
         this.mobile();
 		window.onresize = T.setImgSize();
+		T.getAppInfo();
 	},
 	update: function () {
 		T.width = window.innerWidth;
 		T.height = window.innerHeight;
 	},
+    getAppInfo : function(){
+        T.token = T.getQueryString('token');
+        T.isLogin = (T.token && T.token.length>0);
+    },
 	getQueryString: function (name) {
 		let reg = new RegExp("(^|&|/?)" + name + "=([^&]*)(&|$)", "i");
 		let r = encodeURI(window.location.search || window.location.href || window.location.hash).substr(1).match(reg);
