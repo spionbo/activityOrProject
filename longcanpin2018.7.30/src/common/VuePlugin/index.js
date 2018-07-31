@@ -34,16 +34,15 @@ MyPlugin.install = function (Vue, options) {
 			if (obj.load) self.$pops.loadding();
 			return new Promise((resolve, reject) => {
 				$.ajax({
-					url: obj.url,
+					url: obj.url+"?jsoncallback=?",
 					type: obj.type,
-					dataType: obj.dataType || 'json',
+					dataType: 'jsonp',
 					data: obj.data,
-                    headers : obj.headers,
 					timeout: 500000,
 					success: function (data) {
-						if (data.success === true) { //更新登录信息
+						if (data.ret === 0) { //更新登录信息
 							resolve(data);
-						} else if (obj.callback && data.errorCode !== "9998") {
+						} else if (obj.callback && data.ret ===0) {
 							resolve(data);
                             self.$pops.removeLoadding();
 						} else {

@@ -14,14 +14,8 @@
         </div>
         <div class="tit img1 img-size" data-height="39">&nbsp;</div>
         <article class="date">
-            <div class="tit">
-                <div class="tab current">08月<br/>6日</div>
-                <div class="tab">08月<br/>6日</div>
-                <div class="tab">08月<br/>6日</div>
-                <div class="tab">08月<br/>6日</div>
-                <div class="tab">08月<br/>6日</div>
-                <div class="tab">08月<br/>6日</div>
-                <div class="tab">08月<br/>6日</div>
+            <div class="tit" v-if="data">
+                <div class="tab" v-for="item in data" :key="item.day">{{item[0].day.substr(4,2)}}月<br/>{{item[0].day.substr(6,2)}}日</div>
             </div>
             <div class="cnt">
                 <ul>
@@ -87,8 +81,61 @@
         name: 'App',
         components: {
         },
+        data(){
+            return{
+                data : null,
+                data1 : null,
+                today : T.getDate.today().replace(/\-/g,"")
+            }
+        },
         mounted(){
             this.setImgSize();
+            this.init();
+            console.log(this.today)
+        },
+        methods:{
+            init(){
+                let self = this;
+                this.ajax({
+                    url : "/user/produce_history"
+                }).then(data=>{
+                    let num = [1,2,3,4,5,6,7,8] ,
+                        type = [24,25,26],//额 外加赠终极大奖
+                        typeArr = {},
+                        arr = {};
+                    data.response.data.list.forEach(obj=>{
+                        num.forEach(num=>{
+                            if(obj.day_no == num &&
+                                obj.money_type!="24" &&
+                                obj.money_type!="25" &&
+                                obj.money_type!="26"){
+                                if(!arr[num]){
+                                    arr[num] = []
+                                }
+                                arr[num].push(obj)
+                            }
+                            type.forEach(typeNum=>{
+                                if(obj.money_type===String(typeNum)){
+                                    if(!typeArr[typeNum]){
+                                        typeArr[typeNum] = []
+                                    }
+                                    typeArr[typeNum].push(obj)
+                                }
+                            });
+                        })
+                    });
+                    self.data = arr;
+                    console.log(arr)
+                    console.log(typeArr)
+                })
+            },
+            callApp(){
+                if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {
+                    directToTrade()
+                }else{
+                    window.jianyi.directToTrade()
+                }
+            }
         }
     }
 </script>

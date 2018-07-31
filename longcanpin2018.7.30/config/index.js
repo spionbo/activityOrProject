@@ -2,7 +2,20 @@
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
+const URL = "http://devapi.jianyicp.com";
+let proxyObj = {};
+[
+    "/user"
+].forEach(val=>{
+    proxyObj[val] = {
+        target: URL,
+        changeOrigin: true,
+        pathRewrite: {
+            ['^'+val] : val
+        }
+    };
+});
 
 module.exports = {
   dev: {
@@ -10,7 +23,7 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: proxyObj,
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

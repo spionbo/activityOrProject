@@ -95,7 +95,6 @@ export default class Base{
 
 		}
 		new Vue({
-			store,
 			el : '.'+childName ,
 			mounted(){
 			    if(popData.props.obj.showPop!==false){
@@ -145,7 +144,6 @@ export default class Base{
 			</div>
 		`).appendTo('body');
 		this.component = new Vue({
-			store,
 			el:'.'+childName,
 			data(){
 				return {
