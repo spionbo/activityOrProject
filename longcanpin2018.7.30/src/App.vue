@@ -14,12 +14,38 @@
         </div>
         <div class="tit img1 img-size" data-height="39">&nbsp;</div>
         <article class="date">
-            <div class="tit" v-if="data">
-                <div class="tab" v-for="item in data" :class="{current:item[0].day == today}" :key="item.day">{{item[0].day.substr(4,2)}}月<br/>{{item[0].day.substr(6,2)}}日</div>
+            <div class="tit">
+                <div class="tab" v-for="item in allData" :class="{current:item.current}" :key="item.key">
+                    {{item.tit.substr(4,2)}}月<br/>{{item.tit.substr(6,2)}}日
+                </div>
             </div>
             <div class="cnt">
-                <div class="option" v-for="item in dataObj" :key="item.key" v-html="item">
-                </div>
+                <ul v-for="item in allData" :class="{cur:item.current}" :key="item.key">
+                    <li :class="{'-1':'','0':'open','1':'gray'}[item.cnt[0].status]">
+                        <h2>建仓满<em>8</em>元</h2>
+                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
+                        <div class="btn img-size" data-fontSize="28" @click="callApp"
+                             data-paddingLeft="15" data-paddingRight="15">
+                            {{{'-1':'去建仓解锁','0':'已获得','1':'过期未获得'}[item.cnt[0].status]}}
+                        </div>
+                    </li>
+                    <li :class="{'-1':'','0':'open','1':'gray'}[item.cnt[1].status]">
+                        <h2>建仓满<em>200</em>元</h2>
+                        <div class="img img200 img-size" data-width="152" data-height="157"></div>
+                        <div class="btn img-size" data-fontSize="28" @click="callApp"
+                             data-paddingLeft="15" data-paddingRight="15">
+                            {{{'-1':'去建仓解锁','0':'已获得','1':'过期未获得'}[item.cnt[1].status]}}
+                        </div>
+                    </li>
+                    <li :class="{'-1':'','0':'open','1':'gray'}[item.cnt[2].status]">
+                        <h2>建仓满<em>10000</em>元</h2>
+                        <div class="img img888 img-size" data-width="152" data-height="157"></div>
+                        <div class="btn img-size" data-fontSize="28" @click="callApp"
+                             data-paddingLeft="15" data-paddingRight="15">
+                            {{{'-1':'去建仓解锁','0':'已获得','1':'过期未获得'}[item.cnt[2].status]}}
+                        </div>
+                    </li>
+                </ul>
                 <p>*仅限农产品交易，产品包括GL大豆、GL小麦、GL玉米。</p>
             </div>
         </article>
@@ -60,21 +86,20 @@
 
 <script>
     export default {
-        name: 'App',
-        components: {
+        computed:{
         },
         data(){
             return{
                 data : null,
                 dataObj : null,
                 data1 : null,
+                allData : null,
                 today : T.getDate.today().replace(/\-/g,"")
             }
         },
         mounted(){
             this.setImgSize();
             this.init();
-            console.log(this.today)
         },
         methods:{
             init(){
@@ -82,43 +107,44 @@
                 this.ajax({
                     url : "/user/produce_history"
                 }).then(data=>{
-                    let num = [1,2,3,4,5,6,7,8] ,
-                        type = [24,25,26],//额 外加赠终极大奖
+                    let type = [24,25,26],//额 外加赠终极大奖
                         typeArr = {},
-                        arr = {},
-                        arrObj = {} ,
-                        today = self.today;
+                        allArr = [];
+                    data.response.data.days.forEach(val=>{
+                       allArr.push({
+                           tit : val
+                       })
+                    });
                     data.response.data.list.forEach(obj=>{
-                        num.forEach(num=>{
+                        allArr.forEach(all=>{
+                            if(obj.money_type!="24" &&
+                                obj.money_type!="25" &&
+                                obj.money_type!="26" &&
+                                obj.day == all.tit
+                            ){
+                                if(!all.cnt){
+                                    all.cnt = [];
+                                }
+                                all.cnt.push(obj);
+                            }
+                        });
+                        type.forEach(typeNum=>{
+                            if(obj.money_type===String(typeNum)){
+                                if(!typeArr[typeNum]){
+                                    typeArr[typeNum] = []
+                                }
+                                typeArr[typeNum].push(obj)
+                            }
+                        });
+                        /*num.forEach(num=>{
                             if(obj.day_no == num &&
                                 obj.money_type!="24" &&
                                 obj.money_type!="25" &&
                                 obj.money_type!="26"){
                                 if(!arr[num]){
                                     arr[num] = [];
-                                    arrObj[num] = {};
                                 }
                                 arr[num].push(obj);
-                                arrObj[num] = `<ul class="${obj.day==today?'show':'hide'}">
-                                    <li class="${obj.money_type=='21' && obj.day==today?'cur':obj.money_type=='21'?'open':'gray'}">
-                                        <h2>建仓满<em>8</em>元</h2>
-                                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
-                                        <div class="btn img-size" data-fontSize="28"
-                                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
-                                    </li>
-                                    <li class="${obj.money_type=='22' && obj.day==today?'cur':obj.money_type=='22'?'open':'gray'}">
-                                        <h2>建仓满<em>200</em>元</h2>
-                                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
-                                        <div class="btn img-size" data-fontSize="28"
-                                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
-                                    </li>
-                                    <li class="${obj.money_type=='23' && obj.day==today?'cur':obj.money_type=='23'?'open':'gray'}">
-                                        <h2>建仓满<em>10000</em>元</h2>
-                                        <div class="img img8 img-size" data-width="152" data-height="157"></div>
-                                        <div class="btn img-size" data-fontSize="28"
-                                             data-paddingLeft="15" data-paddingRight="15">去建仓解锁</div>
-                                    </li>
-                                </ul>`;
                             }
                             type.forEach(typeNum=>{
                                 if(obj.money_type===String(typeNum)){
@@ -128,12 +154,70 @@
                                     typeArr[typeNum].push(obj)
                                 }
                             });
-                        })
+                        })*/
                     });
-                    self.data = arr;
-                    self.dataObj  = arrObj;
-                    console.log(arr)
-                    console.log(typeArr)
+                    allArr.forEach(obj=>{
+                        if(!obj.cnt){
+                            obj.cnt = [];
+                        }
+                        [0,1,2].forEach(val=>{//如果data中没有200，800，888的话，则该产品没有使用;
+                            //-1未使用 0已使用 1已过期
+                            if(!obj.cnt[val]){
+                                obj.cnt[val] = {
+                                    status : 1
+                                };
+                            }else if(obj.cnt[val].day<self.today){
+                                obj.cnt[val].status = 0;
+                            }else{
+                                obj.cnt[val].status = -1;
+                            }
+                        });
+                        obj.current = false;
+                        if(obj.tit==self.today){
+                            obj.current = true;
+                        }
+                    });
+                    /*$.each(arr,(index,data)=>{
+                        [0,1,2].forEach(val=>{//如果data中没有200，800，888的话，则该产品没有使用;
+                            //-1未使用 0已使用 1已过期
+                            if(!data[val]){
+                                data[val] = {
+                                    status : 1
+                                };
+                            }else if(data[val].day<self.today){
+                                data[val].status = 0;
+                            }else{
+                                data[val].status = -1;
+                            }
+                        });
+                        data.forEach(obj=>{
+                            data.current = false;
+                            if(obj.day==self.today){
+                                data.current = true;
+                            }
+                        });
+                    });
+                    $.each(arr,(index,data)=>{//如果没有一个是当前状态，则所有时间已过期
+                        if(data.current && isCurrent){
+                            isCurrent = true
+                        };
+                    });
+                    if(!isCurrent){//将最后一个选择上
+                        arr[8].current = true;
+                    }*/
+                    let isCurrent = false;
+                    allArr.forEach(obj=>{
+                        if(obj.current && isCurrent){
+                            isCurrent = true
+                        };
+                    });
+                    if(!isCurrent){//将最后一个选择上
+                        allArr[allArr.length-1].current = true;
+                    }
+                    //self.data = arr;
+                    self.allData = allArr;
+                    self.data1 = typeArr;
+                    console.log(allArr)
                     self.$nextTick(()=>{
                         self.setImgSize();
                     })
@@ -195,11 +279,6 @@
             }
         }
     }
-    .tit1{
-        height:30px;
-        display:block;
-        overflow:hidden;
-    }
     .date{
         padding:15px;
         .tit{
@@ -243,10 +322,53 @@
                 color:#fd5e49;
                 font-size:15px;
             }
-            .img8{
-                background:url("./assets/images/product/8.png");
-                background-size:contain;
+            li{
+                .img8{
+                    background:url("./assets/images/product/8.png");
+                    background-size:contain;
+                }
+                .img200{
+                    background:url("./assets/images/product/200.png");
+                    background-size:contain;
+                }
+                .img888{
+                    background:url("./assets/images/product/888.png");
+                    background-size:contain;
+                }
+                &.open{
+                    .img8{
+                        background-image:url("./assets/images/product/8open.png");
+                    }
+                    .img200{
+                        background-image:url("./assets/images/product/200open.png");
+                    }
+                    .img888{
+                        background-image:url("./assets/images/product/888open.png");
+                    }
+                    .btn{
+                        background:none;
+                        box-shadow: none;
+                        color:#333;
+                    }
+                }
+                &.gray{
+                    .img8{
+                        background-image:url("./assets/images/product/8gray.png");
+                    }
+                    .img200{
+                        background-image:url("./assets/images/product/200gray.png");
+                    }
+                    .img888{
+                        background-image:url("./assets/images/product/888gray.png");
+                    }
+                    .btn{
+                        background:none;
+                        box-shadow: none;
+                        color:#333;
+                    }
+                }
             }
+
             .btn{
                 font-size:14px;
                 padding:5px 15px;
@@ -256,11 +378,11 @@
                 box-shadow:0 1px 5px rgba(0,0,0,.3);
             }
             ul{
-                display:flex;
+                display:none;
                 justify-content:center;
                 align-items: center;
-                &.hide{
-                    display:none;
+                &.cur{
+                    display:flex;
                 }
                 li{
                     flex:1;
@@ -279,6 +401,9 @@
     .date1{
         .cnt{
             border-radius:10px;
+            ul{
+                display:flex;
+            }
         }
         h2{
             text-align:center;
