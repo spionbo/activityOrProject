@@ -166,6 +166,16 @@
                         }
                     });
                     let isCurrent = false;
+                    if(!isCurrent){//将最后一个选择上
+                        let obj = allArr[allArr.length-1];
+                        if(parseInt(obj.day)<self.today){
+                            obj.current = true;
+                            obj.select = true;
+                        }else{
+                            allArr[0].current = true;
+                            allArr[0].select = true;
+                        }
+                    }
                     allArr.forEach(obj=>{
                         if(obj.current && !isCurrent){
                             obj.cnt[0].status = -1;
@@ -174,13 +184,6 @@
                             isCurrent = true
                         };
                     });
-                    if(!isCurrent){//将最后一个选择上
-                        let obj = allArr[allArr.length-1];
-                        if(parseInt(obj.day)<self.today){
-                            obj.current = true;
-                            obj.select = true;
-                        }
-                    }
                     let num = 0;
                     for(let item in typeArr){
                         typeArr[item].forEach(obj=>{
@@ -193,6 +196,7 @@
                     self.allData = allArr;
                     self.data1 = typeArr;
                     self.$nextTick(()=>{
+                        T.setImgSize();
                         self.setImgSize();
                     })
                 })

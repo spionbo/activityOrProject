@@ -56,8 +56,8 @@ let T = {
 		T.getAppInfo();
 	},
 	update: function () {
-		T.width = window.innerWidth;
-		T.height = window.innerHeight;
+        T.width = window.innerWidth;
+        T.height = window.innerHeight;
 	},
     getAppInfo : function(){
         T.token = T.getQueryString('token');
@@ -227,6 +227,13 @@ let T = {
     },
 	setImgSize() {
 		T.update();
+		if(T.width<10){
+		    setTimeout(function(){
+                T.update();
+                T.setImgSize();
+            },200);
+		    return;
+        }
 		let originWidth = T.Mobile?375:750,
 			ratio = T.width / originWidth;
 		$('.img-size').each(function () {
@@ -241,7 +248,7 @@ let T = {
 				'marginRight', 'marginBottom'], function (i, str) {
 				let num = self.attr('data-' + str);
 				if (num) {
-					num = num * ratio / 2 / 16 + 'rem';
+                    num = num * ratio / 2 / 16 + 'rem';
 					self.css(str, num)
 				}
 			});
