@@ -126,6 +126,7 @@
                                 if(!all.cnt){
                                     all.cnt = [];
                                 }
+                                obj.status = 0;
                                 all.cnt.push(obj);
                             }
                         });
@@ -143,7 +144,9 @@
                             typeArr[typeNum] = []
                         }
                     });
-                    allArr.forEach(obj=>{
+                    let isCurrent = false,
+                        money = 0;
+                    allArr.forEach(obj=>{//初始化
                         if(!obj.cnt){
                             obj.cnt = [];
                         }
@@ -151,21 +154,24 @@
                             //-1未使用 0已使用 1已过期
                             if(!obj.cnt[val]){
                                 obj.cnt[val] = {
-                                    status : 1
+                                    status : -1
                                 };
-                            }else if(obj.cnt[val].day<self.today){
-                                obj.cnt[val].status = 0;
-                            }else{
+                            }else if(parseInt(obj.cnt[val].day)<self.today){
+                                obj.cnt[val].status = 1;
+                            }else if(parseInt(obj.cnt[val].day)>self.today){
                                 obj.cnt[val].status = -1;
+                            }
+                            if(obj.cnt[val].money){
+                                money += parseInt(obj.cnt[val].money);
                             }
                         });
                         obj.current = false;
                         if(obj.tit==self.today){
                             obj.current = true;
                             obj.select = true;
+                            isCurrent = true;
                         }
                     });
-                    let isCurrent = false;
                     if(!isCurrent){//将最后一个选择上
                         let obj = allArr[allArr.length-1];
                         if(parseInt(obj.day)<self.today){
@@ -184,15 +190,15 @@
                             isCurrent = true
                         };
                     });
-                    let num = 0;
+                    /*let num = 0;
                     for(let item in typeArr){
                         typeArr[item].forEach(obj=>{
                             if(obj && obj.money){
                                 num += parseInt(obj.money);
                             }
                         })
-                    }
-                    self.money = num;
+                    }*/
+                    self.money = money;
                     self.allData = allArr;
                     self.data1 = typeArr;
                     self.$nextTick(()=>{
