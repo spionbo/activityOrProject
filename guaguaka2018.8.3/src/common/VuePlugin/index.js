@@ -42,7 +42,7 @@ MyPlugin.install = function (Vue, options) {
 					success: function (data) {
 						if (data.ret === 0) { //更新登录信息
 							resolve(data);
-						} else if (obj.callback && data.ret ===0) {
+						} else if (obj.callback || data.ret ===0) {
 							resolve(data);
                             self.$pops.removeLoadding();
 						} else {

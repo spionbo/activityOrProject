@@ -10,6 +10,7 @@
     #top{
         position:relative;
         z-index: 2;
+        height:150px;
         .result{
             position:absolute;
             left:0;
@@ -20,29 +21,46 @@
     }
 </style>
 <template>
-    <div id="top">
-        <canvas id="c1" class="canvas"></canvas>
-        <div class="result">当日手续费全部减免</div>
+    <div id="top" v-if="data">
+        <canvas id="c1" v-if="data.use_num!=0" class="canvas"></canvas>
+        <div class="result">{{msg}}</div>
     </div>
 </template>
 <script>
     export default {
+        props:['data','result'],
+        data(){
+            return{
+                msg:""
+            }
+        },
         mounted(){
             let self = this;
             self.init();
+            if(this.data.use_num==0){
+                this.msg = "暂时没有刮卡的机会了";
+            }
+        },
+        watch:{
+            result(){
+                this.msg = "当日手续费全部"+this.result.card_type+"折";
+                if(this.result.card_type==1){
+                    this.msg = "当日手续费全免";
+                }
+            }
         },
         methods:{
             init(){
-                let c1, //画布
-                    ctx, //画笔
+                let c1 = document.getElementById("c1"); //画布
+                if(!c1) return;
+                let ctx, //画笔
                     ismousedown, //标志用户是否按下鼠标或开始触摸
                     isOk=0, //标志用户是否已经刮开了一半以上
-                    width = document.getElementById("c1").clientWidth,
+                    width = c1.clientWidth,
                     height = 150,
                     fontem = parseInt(window.getComputedStyle(document.documentElement, null)["font-size"]);//这是为了不同分辨率上配合@media自动调节刮的宽度
 
                 function add(){
-                    c1 = document.getElementById("c1");
                     //这里很关键，canvas自带两个属性width、height,我理解为画布的分辨率，跟style中的width、height意义不同。
                     //最好设置成跟画布在页面中的实际大小一样
                     //不然canvas中的坐标跟鼠标的坐标无法匹配
@@ -101,9 +119,10 @@
                             e=e.changedTouches[e.changedTouches.length-1];
                         }
                         let ele = document.getElementById("top");
-                        let topY = ele.offsetTop;
+                        let topY = ele.offsetTop-document.querySelector(".article").scrollTop;
                         let oX = c1.offsetLeft+50,
                             oY = topY;
+                        console.log(document.querySelector(".article").scrollTop)
                         let x = (e.clientX + document.body.scrollLeft || e.pageX) - oX || 0,
                             y = (e.clientY + document.body.scrollTop || e.pageY) - oY || 0;
                         //画360度的弧线，就是一个圆，因为设置了ctx.globalCompositeOperation = 'destination-out';

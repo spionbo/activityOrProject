@@ -2,6 +2,8 @@
     .article{
         background:url("./assets/images/bg.jpg") repeat-y;
         background-size: 100%;
+        height:100%;
+        overflow-y:scroll;
         .top{
             img{
                 width:100%;
@@ -113,20 +115,20 @@
             <div class="cnt">
                 <div class="container">
                     <div class="img">
-                        <guagua></guagua>
+                        <guagua :data="guaNum" :result="data1"></guagua>
                     </div>
                     <div class="bottom">
                         <div class="pro">
                             <div class="percent">
-                                <div class="num" style="width:10%"></div>
+                                <div class="num" :style="{width:guaNum.end_left_num/50*100+'px'}"></div>
                             </div>
                             <div class="txt">
-                                限量50张，剩余<em>50</em>张
+                                限量50张，剩余<em>{{guaNum.end_left_num}}</em>张
                             </div>
                         </div>
                         <div class="submit">
-                            <div class="btn">
-                                抢刮刮卡
+                            <div class="btn" :class="{gray:!guaNum.use_num}" @click="btnEvent">
+                                {{btnVal}}
                             </div>
                         </div>
                     </div>
@@ -197,6 +199,12 @@
         },
         data(){
             return{
+                btnVal : "抢刮刮卡",
+                guaNum:{
+                    end_left_num:0,//#今日剩余领取刮刮卡个数
+                    use_num: 1,//#当前用户可以领取的刮刮卡次数
+                },
+                data1 : {}
             }
         },
         mounted(){
@@ -205,12 +213,13 @@
         },
         methods:{
             init() {
-                let self = this;
+                /*let self = this;
                 self.ajax({
-                    url : "http://devapi.jianyicp.com/user/user_gua_add"
+                    url : "http://devapi.jianyicp.com/user/user_gua_num",
+                    load : true
                 }).then(data=>{
-                    debugger;
-                })
+                    self.guaNum = data.response.data;
+                })*/
             },
             callApp(){
                 if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {
@@ -218,6 +227,28 @@
                 }else{
                     window.jianyi.directToTrade()
                 }
+            },
+            btnEvent(){
+                let self = this;
+                self.ajax({
+                    url : "http://devapi.jianyicp.com/user/user_gua_add",
+                    callback:true
+                }).then(data=>{
+                    self.$pop({
+                        title: "错误",
+                        icon : "icon2",
+                        close: true,//是否显示关闭按钮
+                        content: data.response.message
+                    });
+                    self.guaNum.use_num = 0;
+                    self.data1 = {
+                        "user_id": "11", //#用户ID
+                        "status": 1,  //#状态：1已经起效
+                        "card_type": 6,  //#卡类型: 1全免，2，5折，3 7折，4 8折，5 9折	;6 9.5折
+                        "add_time": 1533544939, //生成时间
+                        "use_day": "20180806" //日期
+                    }
+                })
             }
         }
     }
