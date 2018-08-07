@@ -52,21 +52,21 @@
         <div class="tit img2 img-size" data-height="62">&nbsp;</div>
         <article class="date date1">
             <div class="cnt">
-                <ul v-if="data1">
+                <ul>
                     <li>
                         <h2>连续8天<br>建仓满8元</h2>
                         <div class="img img1 img-size" data-width="200" data-height="180"></div>
-                        <h3><em>{{data1["24"].length}}/8</em>已解锁</h3>
+                        <h3><em>{{dataNum[0]}}/8</em>已解锁</h3>
                     </li>
                     <li>
                         <h2>连续8天<br>建仓满200元</h2>
                         <div class="img img2 img-size" data-width="200" data-height="180"></div>
-                        <h3><em>{{data1["25"].length}}/8</em>已解锁</h3>
+                        <h3><em>{{dataNum[1]}}/8</em>已解锁</h3>
                     </li>
                     <li>
                         <h2>连续8天<br>建仓满10000元</h2>
                         <div class="img img3 img-size" data-width="200" data-height="180"></div>
-                        <h3><em>{{data1["26"].length}}/8</em>已解锁</h3>
+                        <h3><em>{{dataNum[2]}}/8</em>已解锁</h3>
                     </li>
                 </ul>
             </div>
@@ -90,10 +90,8 @@
         },
         data(){
             return{
-                data : null,
-                dataObj : null,
-                data1 : null,
                 allData : null,
+                dataNum : [0,0,0],
                 money : 0,
                 today : T.getDate.today().replace(/\-/g,"")
             }
@@ -116,6 +114,7 @@
                            tit : val
                        })
                     });
+                    let money = 0;
                     data.response.data.list.forEach(obj=>{
                         allArr.forEach(all=>{
                             if(obj.money_type!="24" &&
@@ -128,6 +127,11 @@
                                 }
                                 obj.status = 0;
                                 all.cnt.push(obj);
+                            }
+                            if(obj.money_type=="24" ||
+                                obj.money_type=="25" ||
+                                obj.money_type=="26"){
+                                money += parseInt(obj.money);
                             }
                         });
                         type.forEach(typeNum=>{
@@ -144,21 +148,35 @@
                             typeArr[typeNum] = []
                         }
                     });
-                    let isCurrent = false,
-                        money = 0;
+                    let isCurrent = false;
                     allArr.forEach(obj=>{//初始化
                         if(!obj.cnt){
                             obj.cnt = [];
                         }
+                        obj.cnt.forEach(obj1=>{
+                            if(obj1.money_type){ //已解锁多少个
+                                if(obj1.money_type=="21"){
+                                    self.dataNum[0]++;
+                                }
+                                if(obj1.money_type=="22"){
+                                    self.dataNum[1]++;
+                                }
+                                if(obj1.money_type=="23"){
+                                    self.dataNum[2]++;
+                                }
+                            }
+                        });
                         [0,1,2].forEach(val=>{//如果data中没有200，800，888的话，则该产品没有使用;
                             //-1未使用 0已使用 1已过期
+                            if(obj.cnt[val]){
+                                obj.cnt[val].status = 0;
+                            }
                             if(!obj.cnt[val]){
                                 obj.cnt[val] = {
-                                    status : -1
+                                    status : obj.tit==self.today?-1:1
                                 };
-                            }else if(parseInt(obj.cnt[val].day)<self.today){
-                                obj.cnt[val].status = 1;
-                            }else if(parseInt(obj.cnt[val].day)>self.today){
+                            }
+                            if(parseInt(obj.cnt[val].day)>self.today){
                                 obj.cnt[val].status = -1;
                             }
                             if(obj.cnt[val].money){
