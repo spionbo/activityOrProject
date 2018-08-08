@@ -14,36 +14,59 @@
         .result{
             position:absolute;
             left:0;
-            width:100%;
-            top:75px;
+            top:0;
+            right:20px;
+            display:flex;
+            height:100%;
+            align-items: center;
+            justify-content: center;
             text-align:center;
+            background:#ffebd8;
+            img{
+                display:block;
+                max-width: 100%;
+            }
         }
     }
 </style>
 <template>
     <div id="top" v-if="data">
-        <canvas id="c1" v-if="data.use_num!=0" class="canvas"></canvas>
-        <div class="result">{{msg}}</div>
+        <canvas id="c1" v-if="canvasShow" class="canvas"></canvas>
+        <div class="result">
+            <img :src="imgSrc">
+        </div>
     </div>
 </template>
 <script>
     export default {
-        props:['data','result'],
+        props:['data','result','isCheck'],
         data(){
             return{
-                msg:""
+                msg:"",
+                imgSrc : require("./assets/images/product/else.png"),
+                canvasShow : true,
+                canvasText : "请先抢刮刮卡",
             }
         },
         mounted(){
             let self = this;
+            self.canvasShow = self.data.use_num!=0;
             self.init();
             if(this.data.use_num==0){
-                this.msg = "暂时没有刮卡的机会了";
+                this.imgSrc = require("./assets/images/product/no.png");
             }
         },
         watch:{
-            result(){
-                this.msg = "当日手续费全部"+this.result.card_type+"折";
+            isCheck(val){
+                this.canvasText="刮一下";
+                this.init();
+            },
+            "data.use_num"(val){
+                //console.log(val)
+            },
+            result( obj ){
+                let imgName = "0"+obj.card_type;
+                this.imgSrc = require("./assets/images/product/"+imgName+".png");
                 if(this.result.card_type==1){
                     this.msg = "当日手续费全免";
                 }
@@ -51,7 +74,8 @@
         },
         methods:{
             init(){
-                let c1 = document.getElementById("c1"); //画布
+                let self = this,
+                    c1 = document.getElementById("c1"); //画布
                 if(!c1) return;
                 let ctx, //画笔
                     ismousedown, //标志用户是否按下鼠标或开始触摸
@@ -82,17 +106,18 @@
                 function initCanvas(){//网上的做法是给canvas设置一张背景图片，我这里的做法是直接在canvas下面另外放了个div
                     //c1.style.backgroundImage="url(中奖图片.jpg)";
                     ctx.globalCompositeOperation = "source-over";
-                    ctx.fillStyle = '#aaaaaa';
+                    ctx.fillStyle = '#dddddd';
                     ctx.fillRect(0,0,width,height);
                     ctx.fill();
                     ctx.font = "Bold 30px Arial";
                     ctx.textAlign = "center";
                     ctx.fillStyle = "#999999";
-                    ctx.fillText("刮一次",width/2,150/2);//把这个属性设为这个就可以做出圆形橡皮擦的效果
+                    ctx.fillText(self.canvasText,width/2,150/2);//把这个属性设为这个就可以做出圆形橡皮擦的效果
                     //有些老的手机自带浏览器不支持destination-out,下面的代码中有修复的方法
                     ctx.globalCompositeOperation = 'destination-out';
                 }
                 function eventDown(e){
+                    if(self.canvasShow) return;
                     e.preventDefault();
                     ismousedown=true;
                 }
@@ -122,7 +147,7 @@
                         let topY = ele.offsetTop-document.querySelector(".article").scrollTop;
                         let oX = c1.offsetLeft+50,
                             oY = topY;
-                        console.log(document.querySelector(".article").scrollTop)
+                        //console.log(document.querySelector(".article").scrollTop)
                         let x = (e.clientX + document.body.scrollLeft || e.pageX) - oX || 0,
                             y = (e.clientY + document.body.scrollTop || e.pageY) - oY || 0;
                         //画360度的弧线，就是一个圆，因为设置了ctx.globalCompositeOperation = 'destination-out';

@@ -115,7 +115,7 @@
             <div class="cnt">
                 <div class="container">
                     <div class="img">
-                        <guagua :data="guaNum" :result="data1"></guagua>
+                        <guagua :data="guaNum" :result="data1" :isCheck="isCheck"></guagua>
                     </div>
                     <div class="bottom">
                         <div class="pro">
@@ -174,9 +174,13 @@
                                 <li>手续费9折</li>
                                 <li>当日手续费全部9折</li>
                             </ul>
+                            <ul>
+                                <li>手续费9.5折</li>
+                                <li>当日手续费全部9.5折</li>
+                            </ul>
                         </div>
                     </div>
-                    <p>当日抢到的刮刮乐，需当日24:00前刮开，逾期不刮，自动作废，概不补发</p>
+                    <!--<p>当日抢到的刮刮乐，需当日24:00前刮开，逾期不刮，自动作废，概不补发</p>-->
                     <h2>3、刮到相应福利后，享受的手续费减免或打折，当天交易日内有效，如老王2018年9月4日刮到手续费5折，则他在9月4日06:00到次日凌晨04:00之间的全部现金建仓的手续费，享受5折优惠，平仓时间不限。</h2>
                     <h2>4、减免的手续费将在第二个交易日08:00点前以积分的形式即发送到账户中（100积分=1元代金券）。</h2>
                     <h2>5、在法律范围内活动最终解释权权归简易操盘所有</h2>
@@ -204,7 +208,8 @@
                     end_left_num:0,//#今日剩余领取刮刮卡个数
                     use_num: 1,//#当前用户可以领取的刮刮卡次数
                 },
-                data1 : {}
+                data1 : {},
+                isCheck : false,
             }
         },
         mounted(){
@@ -213,13 +218,19 @@
         },
         methods:{
             init() {
-                /*let self = this;
+                let self = this;
                 self.ajax({
                     url : "http://devapi.jianyicp.com/user/user_gua_num",
                     load : true
                 }).then(data=>{
                     self.guaNum = data.response.data;
-                })*/
+                    self.guaNum = {
+                        end_left_num:20,
+                        time_start:1403058804,
+                        use_num:1
+                    };
+                    self.btnVal = self.guaNum.use_num<1?"暂无机会":"抢刮刮卡";
+                })
             },
             callApp(){
                 if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {
@@ -230,24 +241,32 @@
             },
             btnEvent(){
                 let self = this;
+                if(self.guaNum.use_num<1) return;
+                self.guaNum.use_num = 0;
                 self.ajax({
                     url : "http://devapi.jianyicp.com/user/user_gua_add",
                     callback:true
                 }).then(data=>{
+                    if(data.ret==0){
+                        self.isCheck = true;
+                        self.btnVal = "已抢完";
+                        self.guaNum.use_num = 0;
+                        self.data1 = data.response;
+                        /*self.data1 = {
+                            "user_id": "11", //#用户ID
+                            "status": 1,  //#状态：1已经起效
+                            "card_type": 9.5,  //#卡类型: 1全免，2，5折，3 7折，4 8折，5 9折	;6 9.5折
+                            "add_time": 1533544939, //生成时间
+                            "use_day": "20180806" //日期
+                        }*/
+                        return;
+                    }
                     self.$pop({
                         title: "错误",
                         icon : "icon2",
                         close: true,//是否显示关闭按钮
                         content: data.response.message
                     });
-                    self.guaNum.use_num = 0;
-                    self.data1 = {
-                        "user_id": "11", //#用户ID
-                        "status": 1,  //#状态：1已经起效
-                        "card_type": 6,  //#卡类型: 1全免，2，5折，3 7折，4 8折，5 9折	;6 9.5折
-                        "add_time": 1533544939, //生成时间
-                        "use_day": "20180806" //日期
-                    }
                 })
             }
         }
