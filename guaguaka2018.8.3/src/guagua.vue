@@ -15,7 +15,7 @@
             position:absolute;
             left:0;
             top:0;
-            right:20px;
+            right:0;
             display:flex;
             height:100%;
             align-items: center;
@@ -27,31 +27,51 @@
                 max-width: 100%;
             }
         }
+        .getTime{
+            width:100%;
+            height:100%;
+            font-size:20px;
+            display:flex;
+            justify-items: center;
+            align-items: center;
+            time{
+                display:block;
+                width:100%;
+                text-align:center;
+            }
+        }
     }
 </style>
 <template>
     <div id="top" v-if="data">
-        <canvas id="c1" v-if="canvasShow" class="canvas"></canvas>
-        <div class="result">
+        <canvas id="c1" v-show="canvasShow" class="canvas"></canvas>
+        <div class="result" v-if="data.time_start<=0">
             <img :src="imgSrc">
+        </div>
+        <div v-else class="getTime">
+            <time>{{time}}</time>
         </div>
     </div>
 </template>
 <script>
+    import "./common/time";
     export default {
         props:['data','result','isCheck'],
         data(){
             return{
                 msg:"",
                 imgSrc : require("./assets/images/product/else.png"),
-                canvasShow : true,
+                canvasShow : false,
                 canvasText : "请先抢刮刮卡",
+                time:"",
             }
         },
         mounted(){
             let self = this;
-            self.canvasShow = self.data.use_num!=0;
-            self.init();
+            self.canvasShow = self.data.use_num>0;
+            this.$nextTick(function(){
+                self.init();
+            });
             if(this.data.use_num==0){
                 this.imgSrc = require("./assets/images/product/no.png");
             }
@@ -59,28 +79,82 @@
         watch:{
             isCheck(val){
                 this.canvasText="刮一下";
+                self.canvasShow = true;
                 this.init();
             },
-            "data.use_num"(val){
-                //console.log(val)
+            data( data ){
+                let self = this ,
+                    time = "";
+                function timestampToTime(timestamp) {
+                    let date = new Date(timestamp * 1000),//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+                        Y = date.getFullYear() + '/',
+                        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
+                        D = date.getDate() + ' ',
+                        h = date.getHours() + ':',
+                        m = date.getMinutes() + ':',
+                        s = date.getSeconds();
+                    return Y+M+D+h+m+s;
+                }
+                if(data.time_start>0){
+                    self.canvasShow = false;
+                    new CountTime({
+                        updateTime : true,
+                        startTime : timestampToTime(data.time_start),
+                        callback : function(obj){
+                            time = "倒计时"+obj.day+"天 "+obj.hour+":"+obj.minute+":"+obj.second;
+                            self.time = time;
+                        }
+                    });
+                }else{
+                    if(self.data.use_num>0){ //如果有机会
+                        self.canvasShow = true;
+                    }
+                    if(!self.isCheck && self.data.use_num<1){//没有机会
+                        self.canvasShow = false;
+                        self.imgSrc = require("./assets/images/product/no.png");
+                    }
+                    if(self.data.end_left_num==0){
+                        self.canvasShow = false;
+                        self.imgSrc = require("./assets/images/product/00.png");
+                    }
+                }
             },
             result( obj ){
-                let imgName = "0"+obj.card_type;
-                this.imgSrc = require("./assets/images/product/"+imgName+".png");
-                if(this.result.card_type==1){
-                    this.msg = "当日手续费全免";
+                /*let imgName = "0"+obj.card_type ,
+                    src = "./assets/images/product/"+imgName+".png";*/
+                let num = {1:1,2:5,3:7,4:8,5:9,6:9.5};
+                switch(num[obj.card_type]){
+                    case 1:
+                        this.imgSrc = require("./assets/images/product/01.png");
+                        break;
+                    case 5:
+                        this.imgSrc = require("./assets/images/product/05.png");
+                        break;
+                    case 7:
+                        this.imgSrc = require("./assets/images/product/07.png");
+                        break;
+                    case 8:
+                        this.imgSrc = require("./assets/images/product/08.png");
+                        break;
+                    case 9:
+                        this.imgSrc = require("./assets/images/product/09.png");
+                        break;
+                    case 9.5:
+                        this.imgSrc = require("./assets/images/product/09.5.png");
+                        break;
                 }
             }
         },
         methods:{
             init(){
                 let self = this,
+                    top = $("#top"),
                     c1 = document.getElementById("c1"); //画布
                 if(!c1) return;
                 let ctx, //画笔
                     ismousedown, //标志用户是否按下鼠标或开始触摸
                     isOk=0, //标志用户是否已经刮开了一半以上
-                    width = c1.clientWidth,
+                    width = top.width(),
                     height = 150,
                     fontem = parseInt(window.getComputedStyle(document.documentElement, null)["font-size"]);//这是为了不同分辨率上配合@media自动调节刮的宽度
 
@@ -117,7 +191,7 @@
                     ctx.globalCompositeOperation = 'destination-out';
                 }
                 function eventDown(e){
-                    if(self.canvasShow) return;
+                    if(!self.isCheck) return;
                     e.preventDefault();
                     ismousedown=true;
                 }
