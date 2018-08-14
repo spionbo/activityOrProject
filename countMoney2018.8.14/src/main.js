@@ -1,5 +1,9 @@
-import './css/main.css';
-import info from './common/info'; //获取项目信息
+//import './css/main.css';
+import Vue from "vue";
+import VueRouter from 'vue-router';
+import info from './common/info';
+Vue.use(VueRouter);
+/*import info from './common/info'; //获取项目信息
 import {participate} from './common/URL';
 import requirePop from './pop/requirePop.js';
 import directive from './common/directive.js'; // v-touch
@@ -34,10 +38,10 @@ const router = new VueRouter({
 info.init();
 window.router = router;
 window.info = info;
-window.bus = new Vue();
-new Vue({
-    router,
-    data () {
+window.bus = new Vue();*/
+//new Vue({
+    //router,
+    /*data () {
         return {
             transitionName: 'slide-left' ,
             home : false
@@ -90,7 +94,43 @@ new Vue({
                 }
             }
         })
-    },
+    },*/
+/*    template: `
+        <div id="app">
+            <transition name="left">
+                <router-view class="child-view"></router-view>
+            </transition>
+            <div id='pop'><div class='child'></div></div>
+        </div>
+    `
+}).$mount('#app')*/
+const router = new VueRouter({
+    mode: 'hash',
+    base: __dirname,
+    routes: [
+        {
+            path: '/',
+            redirect: '/main'
+        },
+        {
+            path: '/main',
+            name: 'main',
+            component : function(resolve){
+                require(['./module/main/index'],resolve)
+            }
+        },
+        {
+            path: '/game',
+            name: 'game',
+            component : function(resolve){
+                require(['./module/game/index'],resolve)
+            }
+        }
+    ]
+});
+info.init();
+window.router = router;
+window.Main = new Vue({
     template: `
         <div id="app">
             <transition name="left">
@@ -99,4 +139,4 @@ new Vue({
             <div id='pop'><div class='child'></div></div>
         </div>
     `
-}).$mount('#app')
+}).$mount('#app');

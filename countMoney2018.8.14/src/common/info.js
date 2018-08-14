@@ -2,7 +2,7 @@ import {status} from './URL';
 import requirePop from '../pop/requirePop.js';
 var info = {
     name : '多融财富数钞票',
-	version : '1.0' , 
+	version : '1.0' ,
     startTime : null,
     endTime : null,
     status : -1 ,
@@ -30,7 +30,7 @@ var info = {
         info.getTimes.push(callback);
         if(info.getTimes.length<=1){
             T.ajax({
-                url : status , 
+                url : status ,
                 callback : true,
                 data : {
                     channel : 'H5',
@@ -56,7 +56,7 @@ var info = {
             info.getTime(()=>{
                 if(info.status!=0) return;
                 T.ajax({//掷骰机会
-                    url : welcome , 
+                    url : welcome ,
                     callback : true,
                     data : {
                         uid : T.uid
@@ -79,4 +79,4 @@ var info = {
 	author : '',
 	http : 'http://www.duorongcf.com'
 }
-module.exports = info;
+export default info;

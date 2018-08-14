@@ -1,8 +1,6 @@
 <style scoped>
 	@import '../../css/global.css';
 	@import '../../css/vue-pop.css';
-	$red:#ad1e07;
-	$huang:#f79910;
 	.notice{
 		width: 100%; position: absolute;
 		background:url('../../images/notice.png') no-repeat; background-size:cover;z-index: 22;
@@ -28,98 +26,98 @@
 			p{ color: #ad1e07; text-align: center; }
 			.gcountbtn{ background: url('../../images/coubtn.png') no-repeat; background-size: contain; margin: 8px auto 0; color: #fff; text-align: center;
 			}
-			.gbillbtn{ background: url('../../images/billbtn.png') no-repeat; background-size: contain; margin: 0 auto; 
+			.gbillbtn{ background: url('../../images/billbtn.png') no-repeat; background-size: contain; margin: 0 auto;
 			}
 		}
 		.gray{-webkit-filter: grayscale(100%);}
-		@keyframes mysnow{  
-                0%{  
-                    bottom:100%;  
-                    opacity:0;  
-                }  
-                50%{  
-                    opacity:1;  
-                    transform: rotate(1080deg);  
-                }  
-                100%{  
-                    transform: rotate(0deg);  
-                    opacity: 0;  
-                    bottom:0;  
-                }  
-            }  
-            @-webkit-keyframes mysnow{  
-                0%{  
-                    bottom:100%;  
-                    opacity:0;  
-                }  
-                50%{  
-                    opacity:1;  
-                    -webkit-transform: rotate(1080deg);  
-                }  
-                100%{  
-                    -webkit-transform: rotate(0deg);  
-                    opacity: 0;  
-                    bottom:0;  
-                }  
-            }  
-            @-moz-keyframes mysnow{  
-                0%{  
-                    bottom:100%;  
-                    opacity:0;  
-                }  
-                50%{  
-                    opacity:1;  
-                    -moz-transform: rotate(1080deg);  
-                }  
-                100%{  
-                    -moz-transform: rotate(0deg);  
-                    opacity: 0;  
-                    bottom:0;  
-                }  
-            }  
-            @-ms-keyframes mysnow{  
-                0%{  
-                    bottom:100%;  
-                    opacity:0;  
-                }  
-                50%{  
-                    opacity:1;  
-                    -ms-transform: rotate(1080deg);  
-                }  
-                100%{  
-                    -ms-transform: rotate(0deg);  
-                    opacity: 0;  
-                    bottom:0;  
-                }  
-            }  
-            @-o-keyframes mysnow{  
-                0%{  
-                    bottom:100%;  
-                    opacity:0;  
-                }  
-                50%{  
-                    opacity:1;  
-                    -o-transform: rotate(1080deg);  
-                }  
-                100%{  
-                    -o-transform: rotate(0deg);  
-                    opacity: 0;  
-                    bottom:0;  
-                }  
-            }  
-            .roll{  
-                position:absolute;  
-                opacity:0;  
-                animation: mysnow 5s ;  
-                -webkit-animation: mysnow 5s ;  
-                -moz-animation: mysnow 5s ;  
-                -ms-animation: mysnow 5s ;  
-                -o-animation: mysnow 5s ;  
-                height:80px;  
-            }  
-            .div{  
-                position:fixed;  
-            } 
+		@keyframes mysnow{
+                0%{
+                    bottom:100%;
+                    opacity:0;
+                }
+                50%{
+                    opacity:1;
+                    transform: rotate(1080deg);
+                }
+                100%{
+                    transform: rotate(0deg);
+                    opacity: 0;
+                    bottom:0;
+                }
+            }
+            @-webkit-keyframes mysnow{
+                0%{
+                    bottom:100%;
+                    opacity:0;
+                }
+                50%{
+                    opacity:1;
+                    -webkit-transform: rotate(1080deg);
+                }
+                100%{
+                    -webkit-transform: rotate(0deg);
+                    opacity: 0;
+                    bottom:0;
+                }
+            }
+            @-moz-keyframes mysnow{
+                0%{
+                    bottom:100%;
+                    opacity:0;
+                }
+                50%{
+                    opacity:1;
+                    -moz-transform: rotate(1080deg);
+                }
+                100%{
+                    -moz-transform: rotate(0deg);
+                    opacity: 0;
+                    bottom:0;
+                }
+            }
+            @-ms-keyframes mysnow{
+                0%{
+                    bottom:100%;
+                    opacity:0;
+                }
+                50%{
+                    opacity:1;
+                    -ms-transform: rotate(1080deg);
+                }
+                100%{
+                    -ms-transform: rotate(0deg);
+                    opacity: 0;
+                    bottom:0;
+                }
+            }
+            @-o-keyframes mysnow{
+                0%{
+                    bottom:100%;
+                    opacity:0;
+                }
+                50%{
+                    opacity:1;
+                    -o-transform: rotate(1080deg);
+                }
+                100%{
+                    -o-transform: rotate(0deg);
+                    opacity: 0;
+                    bottom:0;
+                }
+            }
+            .roll{
+                position:absolute;
+                opacity:0;
+                animation: mysnow 5s ;
+                -webkit-animation: mysnow 5s ;
+                -moz-animation: mysnow 5s ;
+                -ms-animation: mysnow 5s ;
+                -o-animation: mysnow 5s ;
+                height:80px;
+            }
+            .div{
+                position:fixed;
+            }
 	}
 </style>
 <script>
@@ -179,7 +177,7 @@
         		return className;
         	}
         },
-		mounted(){	        
+		mounted(){
             var self = this;
 	        self.gameing = true;
 	        self.gameend = false;
@@ -225,7 +223,7 @@
 				self.timeDJS = false;
 			}
             T.ajax({  //数得多
-				url : prize , 
+				url : prize ,
 				data : {
 					uid : T.uid				},
 				success : function( _data ){
@@ -237,17 +235,17 @@
 		methods : {
 			timerD(){
 				var self = this;
-				function settime(val) { 
+				function settime(val) {
 					if (self.timeD == 0) {
 						clearTimeout(times);
 						self.timeDJS = false;
-					} else { 
-						self.timeD --; 
-					} 
-					var times = setTimeout(function() { 
-						settime(val) 
-					},1000) 
-				} 
+					} else {
+						self.timeD --;
+					}
+					var times = setTimeout(function() {
+						settime(val)
+					},1000)
+				}
 				settime();
 			},
 			touchUp(){
@@ -356,45 +354,48 @@
 				if(self.chanceRemain == 0){ return; }
 				// requirePop('change');
 				router.replace(
-                    { 
-                        path: 'main', 
-                        query: { uid: T.uid , wap : T.wap}
+                    {
+                        path: 'main',
+                        query: {
+                            uid: T.uid ,
+                            wap :T.wap
+                        }
                     }
                 )
 			},
             investment : function(){
                 T.callApp.investment();
             },
-            luo : function(){ 
-	            function snow(left,height,src){  
-	                var div = document.createElement("div");  
-	                var img = document.createElement("img");  
-	                div.appendChild(img);  
-	                img.className = "roll";  
-	                img.src = src;  
-	                div.style.left=left+"px";  
-	                div.style.height=height+"px";  
-	                div.className="div";  
-	                document.getElementById("snowzone").appendChild(div);  
-	                setTimeout(function(){  
+            luo : function(){
+	            function snow(left,height,src){
+	                var div = document.createElement("div");
+	                var img = document.createElement("img");
+	                div.appendChild(img);
+	                img.className = "roll";
+	                img.src = src;
+	                div.style.left=left+"px";
+	                div.style.height=height+"px";
+	                div.className="div";
+	                document.getElementById("snowzone").appendChild(div);
+	                setTimeout(function(){
 	                    document.getElementById("snowzone").removeChild(div);
-	            	},5000);  
-	            }  
-	            setInterval(function(){  
-	                var left = Math.random()*window.innerWidth;  
-	                var height = Math.random()*window.innerHeight;  
+	            	},5000);
+	            }
+	            setInterval(function(){
+	                var left = Math.random()*window.innerWidth;
+	                var height = Math.random()*window.innerHeight;
 	                var src = "http://192.168.0.18/activity/app/countMoney/src/images/"+Math.floor(Math.random()*2+1)+".png";
-	                snow(left,height,src);  
-	            },500);  
+	                snow(left,height,src);
+	            },500);
             },
 			setTime(){
-				var self = this , 
+				var self = this ,
 					date1 = new Date(),
 					timer = 0,
 					oldseconds = date1.getSeconds();
 
 				function go(){
-					var date = new Date() , 
+					var date = new Date() ,
 						seconds = date.getSeconds() ,
 						millise = date.getMilliseconds();
 
@@ -413,7 +414,7 @@
 						var type = self.$route.query.type;
 						// var $('#swl').text()
 						T.ajax({  //返回随机奖品
-			                url : backprize , 
+			                url : backprize ,
 			                data : {
 			                    uid : T.uid ,
 			                    countingType : type ,
@@ -435,7 +436,7 @@
 				}
 				go();
 			}
-		}           
+		}
 	}
 </script>
 <template>
