@@ -1,8 +1,18 @@
 //import './css/main.css';
 import Vue from "vue";
 import VueRouter from 'vue-router';
+import Zepto from 'zepto';
+import T from './common/global';
 import info from './common/info';
 Vue.use(VueRouter);
+if (!Object.assign) {
+    Object.assign = $.extend;
+}
+Object.assign(window,{
+    $ : Zepto,
+    T : T,
+    Vue : Vue,
+});
 /*import info from './common/info'; //获取项目信息
 import {participate} from './common/URL';
 import requirePop from './pop/requirePop.js';
@@ -131,6 +141,7 @@ const router = new VueRouter({
 info.init();
 window.router = router;
 window.Main = new Vue({
+    router,
     template: `
         <div id="app">
             <transition name="left">

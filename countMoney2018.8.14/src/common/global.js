@@ -1,15 +1,15 @@
 import '../css/htmlLoadding.css';
 import requirePop from '../pop/requirePop.js';
 import cookie from './cookie';
-Date.prototype.Format = function (fmt) { //author: meizz 
+Date.prototype.Format = function (fmt) { //author: meizz
     var o = {
-        "M+": this.getMonth() + 1, //月份 
-        "d+": this.getDate(), //日 
-        "h+": this.getHours(), //小时 
-        "m+": this.getMinutes(), //分 
-        "s+": this.getSeconds(), //秒 
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-        "S": this.getMilliseconds() //毫秒 
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o)
@@ -25,7 +25,7 @@ var T = {
     ,init : function( obj ){
         var config = {
             loadding : {
-                timing : 'spinner-loader', //加载 spinner , spinner-loader , loadingbar , lightLoader , square ,circles,circles1,circles2,circles3,circles4,line' 
+                timing : 'spinner-loader', //加载 spinner , spinner-loader , loadingbar , lightLoader , square ,circles,circles1,circles2,circles3,circles4,line'
                 fillColor : 'rgba(150,213,0,1)',
                 imgs : [],
                 callback:function(){}
@@ -47,11 +47,11 @@ var T = {
     }
     ,requestAnimationFrame : window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame || 
-        window.msRequestAnimationFrame || 
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.setImmediate ||
-        window.msSetIntermediate || 
+        window.msSetIntermediate ||
         function(callback){setInterval(callback,1000/60)
     }
     ,mobile : function(){
@@ -62,11 +62,11 @@ var T = {
             IS_IOS = IS_IPAD || IS_IPHONE,
             IS_ANDROID = !IS_IOS && ua.match(/android/i) != null,
             IS_MOBILE = IS_IOS || IS_ANDROID ;
-            
+
         T.Iphone = IS_IOS;
         T.Android = IS_ANDROID;
         T.Mobile = IS_MOBILE
-        
+
         function is_weixin() {
             var ua = uaLower;
             if (ua.match(/micromessenger/i) == "micromessenger") {
@@ -89,7 +89,7 @@ var T = {
             var ua = uaLower;
             if (ua.match(/QQ\//i) == "qq/")
             { return true; } else { return false; }
-        };  
+        };
         T.weixin = is_weixin();
         T.ios_weixin = is_weixin_ios();
         T.weibo = is_weibo();
@@ -124,8 +124,8 @@ var T = {
         }
     }
     ,getAppInfo : function(){
-        var uid = T.getQueryString('uid') , 
-            wap = T.getQueryString('wap') , 
+        var uid = T.getQueryString('uid') ,
+            wap = T.getQueryString('wap') ,
             type = T.getQueryString('type');
 
         T.uid = uid;
@@ -138,7 +138,7 @@ var T = {
     }
     ,callApp : {
         login : function(obj){ //登录
-            var url = obj.url?('returnUrl='+obj.url):'' , 
+            var url = obj.url?('returnUrl='+obj.url):'' ,
                 wap = T.getQueryString('wap');
 
             if(T.isLogin==true){
@@ -212,7 +212,7 @@ var T = {
         $('.img-size').each(function(){
             var self = $(this);
             $.each(['height','width','fontSize','left','right','bottom','top' , 'paddingTop' ,'lineHeight' , 'paddingLeft' , 'paddingRight' , 'paddingBottom','marginTop', 'marginLeft' , 'marginRight' , 'marginBottom'],function( i , str ){
-                var num = self.attr('data-'+str); 
+                var num = self.attr('data-'+str);
                 if( num ){
                     num = num*ratio/2/16+'rem';
                     self.css(str,num)
@@ -223,7 +223,7 @@ var T = {
     ,ajax : function( obj ){
         if(obj.type != 'get'){
             $.ajax({
-                url : obj.url , 
+                url : obj.url ,
                 type : 'POST',
                 dataType : 'json',
                 contentType:'application/json;charset=UTF-8',
@@ -254,7 +254,7 @@ var T = {
             });
         }else{
             $.ajax({
-                url : obj.url , 
+                url : obj.url ,
                 type : 'GET',
                 dataType : 'json',
                 //contentType:'text/plain;charset=UTF-8',
@@ -267,16 +267,16 @@ var T = {
     ,load : function( ){
         var timing = T.loadding.timing,
             fillColor = T.loadding.fillColor,
-            demo = $('<div id="Loading"><div class="loadIcon"></div><div class="loadText"></div></div>') , 
-            loadIcon = demo.find('.loadIcon') , 
+            demo = $('<div id="Loading"><div class="loadIcon"></div><div class="loadText"></div></div>') ,
+            loadIcon = demo.find('.loadIcon') ,
             text = demo.find('.loadText'),
-            loadDemo = '' , 
+            loadDemo = '' ,
             count = 0,
             timer = null,
             margin = 0,
             imgs = $('.load-img'),
             img = imgs.length?T.loadding.imgs.concat(imgs):T.loadding.imgs,
-            len = img.length , 
+            len = img.length ,
             callbackfn = function( callback ){
                 callback();
             };
@@ -319,7 +319,7 @@ var T = {
         }else if( timing =='square' || timing=='circles' || timing=='circles1' || timing=='circles2' || timing=='circles3' || timing=='circles4' || timing=='line' ){ //距形 圆 圆1 圆3 圆4 线
             require.ensure([],()=>{
                 const Sonic = require('../widgets/loadding/sonic.js');
-                var option = {} , 
+                var option = {} ,
                     width = 50 , height = 50,
                     half = width/2;
 
@@ -449,7 +449,7 @@ var T = {
                         fillColor: fillColor,
 
                         step: function(point, index) {
-                            
+
                             this._.beginPath();
                             this._.moveTo(point.x, point.y);
                             this._.arc(point.x, point.y, index * 3, 0, Math.PI*2, false);
@@ -618,4 +618,4 @@ var T = {
         }
     }
 }
-module.exports = T;
+export default T;
