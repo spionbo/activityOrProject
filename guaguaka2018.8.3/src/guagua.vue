@@ -84,8 +84,8 @@
             },
             data( data ){
                 let self = this ,
-                    time = "";
-                function timestampToTime(timestamp) {
+                    startTime = data.time_start;
+                /*function timestampToTime(timestamp) {
                     let date = new Date(timestamp * 1000),//时间戳为10位需*1000，时间戳为13位的话不需乘1000
                         Y = date.getFullYear() + '/',
                         M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
@@ -94,17 +94,37 @@
                         m = date.getMinutes() + ':',
                         s = date.getSeconds();
                     return Y+M+D+h+m+s;
+                }*/
+                function go(){
+                    let hour = 0,
+                        minute = 0,
+                        second = 0;
+                    hour = Math.floor(startTime/(60*60));
+                    minute = Math.floor((startTime-(hour*60*60))/60);
+                    second = startTime-((hour*60*60)+(minute*60));
+                    hour = hour>9?hour:"0"+hour;
+                    minute = minute>9?minute:"0"+minute;
+                    second = second>9?second:"0"+second;
+                    self.time = "距离开抢"+hour+":"+minute+":"+second;
+                    if(startTime==0){
+                        data.time_start = 0;
+                        self.canvasShow = true;
+                    }else{
+                        startTime -= 1;
+                        setTimeout(go,1000);
+                    }
                 }
-                if(data.time_start>0){
+                if(startTime>0){
                     self.canvasShow = false;
-                    new CountTime({
+                    go();
+                    /*new CountTime({
                         updateTime : true,
                         startTime : timestampToTime(data.time_start),
                         callback : function(obj){
                             time = "倒计时"+obj.day+"天 "+obj.hour+":"+obj.minute+":"+obj.second;
                             self.time = time;
                         }
-                    });
+                    });*/
                 }else{
                     if(self.data.use_num>0){ //如果有机会
                         self.canvasShow = true;
