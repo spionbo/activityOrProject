@@ -282,7 +282,7 @@
                     if(loading==false) return;
                     loading = false;
                     self.ajax({
-                        url: "http://devapi.jianyicp.com/user/user_gua_log",
+                        url: "http://api4.jianyicp.com/user/user_gua_log",
                         data: {
                             page: page,
                             page_count: pageSize
@@ -423,7 +423,7 @@
             init() {
                 let self = this;
                 self.ajax({
-                    url : "http://devapi.jianyicp.com/user/user_gua_num",
+                    url : "http://api4.jianyicp.com/user/user_gua_num",
                     load : true
                 }).then(data=>{
                     /*data = {
@@ -458,7 +458,7 @@
                 if(self.guaNum.use_num<1) return;
                 self.guaNum.use_num = 0;
                 self.ajax({
-                    url : "http://devapi.jianyicp.com/user/user_gua_add",
+                    url : "http://api4.jianyicp.com/user/user_gua_add",
                     callback:true
                 }).then(data=>{
                     //data = {"ret":0,"response":{"message":"\u9886\u53d6\u6210\u529f","data":{"user_id":"11","status":1,"card_type":6,"add_time":1533890636,"use_day":"20180810"}},"benchmark":0}

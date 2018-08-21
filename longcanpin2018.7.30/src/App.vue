@@ -128,12 +128,12 @@
                                 obj.status = 0;
                                 all.cnt.push(obj);
                             }
-                            if(obj.money_type=="24" ||
-                                obj.money_type=="25" ||
-                                obj.money_type=="26"){
-                                money += parseInt(obj.money);
-                            }
                         });
+                        if(obj.money_type=="24" ||
+                            obj.money_type=="25" ||
+                            obj.money_type=="26"){
+                            money += parseInt(obj.money);
+                        }
                         type.forEach(typeNum=>{
                             if(obj.money_type===String(typeNum)){
                                 if(!typeArr[typeNum]){
