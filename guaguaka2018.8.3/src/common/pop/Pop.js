@@ -50,14 +50,14 @@ class Pop extends Base{
 		};
 	}
 };
-((window,Pop)=>{
+/*((window,Pop)=>{
     let pop = new Pop();
 	window.alert = (content)=>{
 		pop.init({
 			content : content
 		})
 	}
-})(window,Pop);
+})(window,Pop);*/
 
 let MyPlugin = function(){
 

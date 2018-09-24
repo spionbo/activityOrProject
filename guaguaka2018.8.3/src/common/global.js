@@ -41,7 +41,7 @@ let Tool = {
 };
 let T = {
     uid : null,
-	token: null,
+	token: "96dbc4eb6a63ef2fcafec2c554c0239e",
 	toFrom : null, //来源
     channel : null,
     version: "1.9.7", //

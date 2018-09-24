@@ -42,7 +42,7 @@ MyPlugin.install = function (Vue, options) {
 					success: function (data) {
 						if (data.ret === 0) { //更新登录信息
 							resolve(data);
-						} else if (obj.callback && data.ret ===0) {
+						} else if (obj.callback || data.ret ===0) {
 							resolve(data);
                             self.$pops.removeLoadding();
 						} else {
@@ -55,7 +55,7 @@ MyPlugin.install = function (Vue, options) {
                                     title: "错误",
                                     icon : "icon2",
                                     close: true,//是否显示关闭按钮
-                                    content: data.errorCode||data.errorMsg
+                                    content: data.response.message
                                 });
                             }
 						}

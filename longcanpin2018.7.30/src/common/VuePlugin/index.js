@@ -46,18 +46,12 @@ MyPlugin.install = function (Vue, options) {
 							resolve(data);
                             self.$pops.removeLoadding();
 						} else {
-							if (data.errorCode === "9998") {
-								self.$store.dispatch("clearLoginInfo");
-								self.go().login.home();
-                                self.$pops.removeLoadding();
-							}else{
-                                self.$pop({
-                                    title: "错误",
-                                    icon : "icon2",
-                                    close: true,//是否显示关闭按钮
-                                    content: data.errorCode||data.errorMsg
-                                });
-                            }
+                            self.$pop({
+                                title: "错误",
+                                icon : "icon2",
+                                close: true,//是否显示关闭按钮
+                                content: data.message||data.errorMsg
+                            });
 						}
 						if (obj.load) self.$pops.removeLoadding();
 					},
