@@ -55,7 +55,7 @@ MyPlugin.install = function (Vue, options) {
                                     title: "错误",
                                     icon : "icon2",
                                     close: true,//是否显示关闭按钮
-                                    content: data.errorCode||data.errorMsg
+                                    content: data.response.message
                                 });
                             }
 						}

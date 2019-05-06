@@ -1,0 +1,71 @@
+html,body,div,p,img,h1,h2,h3,h4,ul,li{ margin:0; padding:0; }
+img,li,ul,ol{ border:none; }
+body{ background:#fff; font-size:1rem; }
+
+.author{ 
+	overflow: hidden;
+	clear: both;
+	padding:20px; 
+}
+.author img{ 
+	float:left; 
+	width:2.5rem; 
+	height:2.5rem; 
+	margin-right:0.625rem;
+}
+.author h2{
+	font-size:0.875rem;
+	font-weight: normal;
+	color: #424242;
+}
+.author time{
+	color:#666;
+	font-size:0.75rem;
+}
+.tit-tag{
+	color: #e41800;
+	padding:0.2rem 20px;
+	line-height: 2rem;
+	overflow: hidden;
+}
+.tit-tag .jian{
+	float:left;
+	width:5px;
+	height: 2rem;
+	border-radius:5px;
+	background: #e41800;
+}
+.tit-tag .name{
+	padding-left:20px;
+	font-size: 1rem;
+}
+
+body>article{
+	padding:20px;
+}
+
+h1.title{
+	font-size: 1.2rem;
+	font-weight:bold;
+}
+.briefly{
+	margin:1rem 0;
+	padding:1rem 1.5rem;
+	font-size: 0.875rem;
+	line-height: 1.8rem;
+	border-left:0.25rem solid #d0d0d0;
+	background:#f6f6f6; 
+	color:#999;
+}
+article p{
+	text-indent: 2em;
+	padding:0.3rem 0;
+	color:#666;
+	line-height: 1.76rem;
+}
+.tips{
+	padding:2rem;
+	text-align: center;
+	font-size: 0.875rem;
+	color:#e60c00
+}
